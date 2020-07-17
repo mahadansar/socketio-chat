@@ -1,35 +1,79 @@
-const User = require("../../models/user");
 const Message = require("../../models/message");
+const User = require("../../models/user");
+const DataLoader = require("dataloader");
 
 module.exports = {
   addMessage: async (args) => {
     try {
-      const Message = new Message({
+      const message = new Message({
         message: args.message,
-        sender: "5f11aa85ac6e7a27ec0c7875",
-        receiver: "5f11b574f5c916209ceaf64d",
+        sender: "5f11b574f5c916209ceaf64d",
+        receiver: "5f11aa85ac6e7a27ec0c7875",
       });
 
-      let result = await Message.save();
+      let result = await message.save();
 
       return { ...result._doc, _id: result.id };
     } catch (err) {
       throw err;
     }
   },
-  updateSocketId: async (email, socketId) => {
-    try {
-      const existingUser = await User.findOne({ email: email });
-      if (!existingUser) {
-        throw new Error("User not found.");
-      }
+  getMessages: async ({ sender, receiver }) => {
+    const data = {
+      $or: [
+        {
+          $and: [
+            {
+              receiver: sender,
+            },
+            {
+              sender: receiver,
+            },
+          ],
+        },
+        {
+          $and: [
+            {
+              receiver: receiver,
+            },
+            {
+              sender: sender,
+            },
+          ],
+        },
+      ],
+    };
 
-      existingUser.socketId = socketId;
-      await existingUser.save();
+    const result = await Message.find(data).sort({ timestamp: 1 });
 
-      return;
-    } catch (err) {
-      console.log(err);
-    }
+    return result.map((message) => {
+      return transformMessage(message);
+    });
   },
+};
+
+const userLoader = new DataLoader((userIds) => {
+  return User.find({ _id: { $in: userIds } });
+});
+
+const user = async (userId) => {
+  try {
+    const user = await userLoader.load(userId.toString());
+    return {
+      ...user._doc,
+      _id: user.id,
+      password: null,
+    };
+  } catch (err) {
+    throw err;
+  }
+};
+
+const transformMessage = async (message) => {
+  return {
+    ...message._doc,
+    _id: message.id,
+    sender: user.bind(this, message._doc.sender),
+    receiver: user.bind(this, message._doc.receiver),
+  };
 };

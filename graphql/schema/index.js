@@ -33,6 +33,7 @@ input UserInput {
 }
 type RootQuery {
     login(email: String!, password: String!): AuthData!
+    getMessages(sender: ID!, receiver: ID!): [Message!]
 }
 type RootMutation {
     createUser(userInput: UserInput): User
