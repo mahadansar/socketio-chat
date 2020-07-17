@@ -13,6 +13,8 @@ module.exports = {
       const hashedPassword = await bcrypt.hash(args.userInput.password, 12);
 
       const user = new User({
+        firstName: args.userInput.firstName,
+        lastName: args.userInput.lastName,
         email: args.userInput.email,
         password: hashedPassword,
       });
@@ -41,5 +43,20 @@ module.exports = {
       }
     );
     return { userId: user.id, token: token, tokenExpiration: 1 };
+  },
+  updateSocketId: async (email, socketId) => {
+    try {
+      const existingUser = await User.findOne({ email: email });
+      if (!existingUser) {
+        throw new Error("User not found.");
+      }
+
+      existingUser.socketId = socketId;
+      await existingUser.save();
+
+      return;
+    } catch (err) {
+      console.log(err);
+    }
   },
 };

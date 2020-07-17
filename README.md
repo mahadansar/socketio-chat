@@ -14,6 +14,7 @@ CMD Logs:
 - npm install --save bcryptjs
 - npm install --save jsonwebtoken
 - npm install --save dataloader
+- npm install socket.io
 
 ./frontend:
 
