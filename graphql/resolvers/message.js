@@ -1,6 +1,7 @@
 const Message = require("../../models/message");
 const User = require("../../models/user");
 const DataLoader = require("dataloader");
+var { sockets, realSockets } = require("../../Global");
 
 module.exports = {
   addMessage: async (args) => {
@@ -10,6 +11,16 @@ module.exports = {
         sender: "5f11b574f5c916209ceaf64d",
         receiver: "5f11aa85ac6e7a27ec0c7875",
       });
+
+      for (let y in realSockets) {
+        if ("5f11aa85ac6e7a27ec0c7875" === realSockets[y].id) {
+          console.log(realSockets[y].id);
+
+          realSockets[y].emit("message", message);
+
+          break;
+        }
+      }
 
       let result = await message.save();
 

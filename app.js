@@ -16,7 +16,7 @@ const io = require("socket.io")(server);
 
 io.on("connection", (socket) => {
   const email = socket.request._query["email"];
-  addSocket(email, socket.id);
+  addSocket(email, socket.id, socket);
 
   socket.on("disconnect", () => {
     removeSocket(socket.id);
