@@ -1,10 +1,41 @@
 import React, { useState } from "react";
+import { Query } from "react-apollo";
+import { gql } from "apollo-boost";
 
 import loginImg from "../../login.svg";
 
 export const Login = (props) => {
-  // const [username, setUsername] = useState("");
-  // const [password, setPassword] = useState("");
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+  });
+  const [submitted, setSubmitted] = useState(false);
+  const { email, password } = inputs;
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setInputs((inputs) => ({ ...inputs, [name]: value }));
+    setSubmitted(false);
+  }
+
+  const LOGIN_QUERY = gql`
+    query login($email: String!, $password: String!) {
+      login(email: $email, password: $password) {
+        userId
+        token
+        tokenExpiration
+      }
+    }
+  `;
+
+  function handleLogin(e) {
+    e.preventDefault();
+    setSubmitted(true);
+
+    if (submitted) {
+      if (email && password) {
+      }
+    }
+  }
 
   return (
     <div className="base-container" ref={props.containerRef}>
@@ -15,17 +46,30 @@ export const Login = (props) => {
         </div>
         <div className="form">
           <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input type="text" name="username" placeholder="username" />
+            <input
+              type="text"
+              name="email"
+              placeholder="Email"
+              value={email}
+              onChange={handleChange}
+            />
+            {submitted && !email && <div>Email is required</div>}
           </div>
+
           <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input type="password" name="password" placeholder="password" />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={password}
+              onChange={handleChange}
+            />
+            {submitted && !password && <div>Password is required</div>}
           </div>
         </div>
       </div>
       <div className="footer">
-        <button type="button" className="btn">
+        <button type="button" className="btn" onClick={handleLogin}>
           Login
         </button>
       </div>

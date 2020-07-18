@@ -21,6 +21,7 @@ CMD Logs:
 - npx create-react-app .
 - npm install --save react-router-dom
 - npm install socket.io-client react-scroll-to-bottom react-emoji query-string
+- npm i -s graphql apollo-boost react-apollo
 
 Other INFO:
 

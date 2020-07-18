@@ -3,9 +3,18 @@ import React, { useState } from "react";
 import loginImg from "../../login.svg";
 
 export const Register = (props) => {
-  // const [username, setUsername] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
+  const [inputs, setInputs] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+ // const [submitted, setSubmitted] = useState(false);
+  const { firstName, lastName, email, password } = inputs;
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setInputs((inputs) => ({ ...inputs, [name]: value }));
+  }
 
   return (
     <div className="base-container" ref={props.containerRef}>
@@ -16,16 +25,40 @@ export const Register = (props) => {
         </div>
         <div className="form">
           <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input type="text" name="username" placeholder="username" />
+            <input
+              type="text"
+              name="firstName"
+              placeholder="First Name"
+              value={firstName}
+              onChange={handleChange}
+            />
           </div>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input type="email" name="email" placeholder="email" />
+            <input
+              type="text"
+              name="lastName"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={handleChange}
+            />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input type="text" name="password" placeholder="password" />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={email}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              name="password"
+              placeholder="Password"
+              value={password}
+              onChange={handleChange}
+            />
           </div>
         </div>
       </div>
