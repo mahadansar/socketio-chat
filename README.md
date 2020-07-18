@@ -20,6 +20,7 @@ CMD Logs:
 
 - npx create-react-app .
 - npm install --save react-router-dom
+- npm install socket.io-client react-scroll-to-bottom react-emoji query-string
 
 Other INFO:
 
