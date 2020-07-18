@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Query } from "react-apollo";
-import { gql } from "apollo-boost";
+import { useQuery } from "react-apollo";
+import gql from "graphql-tag";
 
 import loginImg from "../../login.svg";
 
@@ -18,7 +18,7 @@ export const Login = (props) => {
   }
 
   const LOGIN_QUERY = gql`
-    query login($email: String!, $password: String!) {
+    query($email: String!, $password: String!) {
       login(email: $email, password: $password) {
         userId
         token
@@ -26,6 +26,8 @@ export const Login = (props) => {
       }
     }
   `;
+
+  const [saveLogin] = useQuery(LOGIN_QUERY);
 
   function handleLogin(e) {
     e.preventDefault();
