@@ -3,20 +3,20 @@ var { realSockets } = require("../../Global");
 const { transformMessage } = require("./merge");
 
 module.exports = {
-  addMessage: async (args) => {
+  addMessage: async (args, req) => {
     try {
+      if (!req.isAuth) {
+        throw new Error("Unauthenticated!");
+      }
       const message = new Message({
         message: args.message,
-        sender: "5f11aa85ac6e7a27ec0c7875",
-        receiver: "5f11b574f5c916209ceaf64d",
+        sender: req.userId,
+        receiver: args.userId,
       });
 
       for (let y in realSockets) {
-        if ("5f11aa85ac6e7a27ec0c7875" === realSockets[y].id) {
-          console.log(realSockets[y].id);
-
-          // realSockets[y].emit("message", message);
-
+        if (args.userId === realSockets[y].id) {
+          realSockets[y].emit("message", message);
           break;
         }
       }
@@ -28,36 +28,43 @@ module.exports = {
       throw err;
     }
   },
-  getMessages: async ({ sender, receiver }) => {
-    const data = {
-      $or: [
-        {
-          $and: [
-            {
-              receiver: sender,
-            },
-            {
-              sender: receiver,
-            },
-          ],
-        },
-        {
-          $and: [
-            {
-              receiver: receiver,
-            },
-            {
-              sender: sender,
-            },
-          ],
-        },
-      ],
-    };
+  getMessages: async (args, req) => {
+    try {
+      if (!req.isAuth) {
+        throw new Error("Unauthenticated!");
+      }
+      const data = {
+        $or: [
+          {
+            $and: [
+              {
+                receiver: req.userId,
+              },
+              {
+                sender: args.userId,
+              },
+            ],
+          },
+          {
+            $and: [
+              {
+                receiver: args.userId,
+              },
+              {
+                sender: req.userId,
+              },
+            ],
+          },
+        ],
+      };
 
-    const result = await Message.find(data).sort({ timestamp: 1 });
+      const result = await Message.find(data).sort({ timestamp: 1 });
 
-    return result.map((message) => {
-      return transformMessage(message);
-    });
+      return result.map((message) => {
+        return transformMessage(message);
+      });
+    } catch (err) {
+      throw err;
+    }
   },
 };
