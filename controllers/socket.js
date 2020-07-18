@@ -1,13 +1,11 @@
-var { sockets, realSockets } = require("../Global");
-const { updateSocketId } = require("../graphql/resolvers/auth");
+var { realSockets } = require("../Global");
+const { updateSocketId } = require("../graphql/resolvers/user");
 /**
  * SOCKET IO
  */
-
 module.exports = {
   addSocket: async (email, socketId, socket) => {
     try {
-      sockets.push({ email, socketId });
       realSockets.push(socket);
       updateSocketId(email, socketId);
     } catch (err) {
@@ -16,7 +14,6 @@ module.exports = {
   },
   removeSocket: async (socketId) => {
     try {
-      sockets = sockets.filter((item) => item.socketId !== socketId);
       realSockets = realSockets.filter((item) => item.id !== socketId);
     } catch (err) {
       throw err;

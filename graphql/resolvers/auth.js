@@ -20,7 +20,6 @@ module.exports = {
       });
 
       const result = await user.save();
-
       return { ...result._doc, password: null, _id: result.id };
     } catch (err) {
       throw err;
@@ -43,20 +42,5 @@ module.exports = {
       }
     );
     return { userId: user.id, token: token, tokenExpiration: 1 };
-  },
-  updateSocketId: async (email, socketId) => {
-    try {
-      const existingUser = await User.findOne({ email: email });
-      if (!existingUser) {
-        throw new Error("User not found.");
-      }
-
-      existingUser.socketId = socketId;
-      await existingUser.save();
-
-      return;
-    } catch (err) {
-      console.log(err);
-    }
   },
 };
