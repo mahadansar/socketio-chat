@@ -32,11 +32,11 @@ input UserInput {
   password: String!
 }
 type RootQuery {
-    login(email: String!, password: String!): AuthData!
     getMessages(userId: ID!): [Message!]
 }
 type RootMutation {
     createUser(userInput: UserInput): User
+    login(email: String!, password: String!): AuthData!
     addMessage(message: String!, userId: ID!): Message!
 }
 schema {
