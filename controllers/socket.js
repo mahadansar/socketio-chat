@@ -8,6 +8,8 @@ module.exports = {
     try {
       realSockets.push(socket);
       updateSocketId(email, socketId);
+      //This is useless commit
+      // a
     } catch (err) {
       throw err;
     }
